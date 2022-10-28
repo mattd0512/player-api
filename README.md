@@ -5,15 +5,19 @@
 ### Back-End 
 Bryan
 
+### Front-End
+Matt
+Joshua
+
 ### Full Stack
 Abdiaziz
 
-## Technologies used
-Backend:
+# Technologies used
+## Backend:
 - Mongoose
 - Axios
 - Node/ Express
-Frontend:
+## Frontend:
 - React
 - Bootstrap
 
