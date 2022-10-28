@@ -3,14 +3,14 @@
 # Team assignments
 
 ### Back-End 
-Bryan
+- Bryan
 
 ### Front-End
-Matt
-Joshua
+- Matt
+- Joshua
 
 ### Full Stack
-Abdiaziz
+- Abdiaziz
 
 # Technologies used
 ## Backend:
