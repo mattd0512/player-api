@@ -25,6 +25,19 @@ const requireToken = passport.authenticate('bearer', { session: false })
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
 
+// function for determining if username or email is used at log in
+
+// to use please update the sign in form on the client sw. Also we need to prevent special characters from being used when registering a username... namely '@' as that is all this script checks against 
+const loginType = (name) => {
+    if (name.includes('@')) {
+        return { email: name }
+    } else {
+        return { username: name }
+    }
+}
+
+
+
 // SIGN UP
 // POST /sign-up
 router.post('/sign-up', (req, res, next) => {
@@ -63,10 +76,11 @@ router.post('/sign-up', (req, res, next) => {
 // POST /sign-in
 router.post('/sign-in', (req, res, next) => {
 	const pw = req.body.credentials.password
+    const name = req.body.credentials.name
 	let user
 
 	// find a user based on the email that was passed
-	User.findOne({ email: req.body.credentials.email })
+	User.findOne(loginType(name))
 		.then((record) => {
 			// if we didn't find a user with that email, send 401
 			if (!record) {
