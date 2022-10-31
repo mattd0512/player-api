@@ -41,25 +41,26 @@ const router = express.Router()
 
 // INDEX
 // GET /games
-router.get('/games', requireToken, (req, res, next) => {
-	Game.find()
-		.then((games) => {
-			// `games` will be an array of Mongoose documents
-			// we want to convert each one to a POJO, so we use `.map` to
-			// apply `.toObject` to each one
-			return games.map((game) => game.toObject())
-		})
-		// respond with status 200 and JSON of the games
-		.then((games) => res.status(200).json({ games: games }))
-		// if an error occurs, pass it to the handler
-		.catch(next)
-})
+// router.get('/games', requireToken, (req, res, next) => {
+// 	Game.find()
+// 		.then((games) => {
+// 			// `games` will be an array of Mongoose documents
+// 			// we want to convert each one to a POJO, so we use `.map` to
+// 			// apply `.toObject` to each one
+// 			return games.map((game) => game.toObject())
+// 		})
+// 		// respond with status 200 and JSON of the games
+// 		.then((games) => res.status(200).json({ games: games }))
+// 		// if an error occurs, pass it to the handler
+// 		.catch(next)
+// })
 
 // INDEX -- game search results
 router.get('/games/search/:name', (req, res, next) => {
     const name = req.params.name
     console.log(name)
     axios.get(`http://www.giantbomb.com/api/search/?api_key=${apiKey}&format=json&query="${name}"&resources=game&limit=25`)
+        .then(handle404)
         .then(apiRes => {
             
             // console.log('this is API Res', apiRes)
@@ -77,6 +78,7 @@ router.get('/games/search/:name', (req, res, next) => {
 router.get('/games/:apiId', (req, res, next) => {
     const apiId = req.params.apiId
     axios.get(`http://www.giantbomb.com/api/game/${apiId}/?api_key=${apiKey}&format=json`)
+        .then(handle404)
         .then(apiRes => {
             res.body = apiRes.data.results
             return res
@@ -90,6 +92,7 @@ router.patch('/games/mylibrary/remove/:apiId', requireToken, (req, res, next) =>
     const apiId = req.params.apiId
     const userId = req.user.id
     User.findById(userId)
+        .then(handle404)
         .then(user => {
             const myGames =user.myGames.slice()
             const ind = myGames.indexOf(apiId)
@@ -109,6 +112,7 @@ router.patch('/games/mylibrary/:apiId', requireToken, (req, res, next) => {
     const userId = req.user.id
     findAndAddGame(apiId)
     User.findById(userId)
+        .then(handle404)
         .then(user => {
             if(!user.myGames.includes(apiId)) {
                 user.myGames.push(apiId)
@@ -124,6 +128,7 @@ router.patch('games/myfavorite/:thumbnailUrl', requireToken, (req, res, next) =>
     const thumbnail = req.params.thumbnailUrl
     const userId = req.user.id
     User.findById(userId)
+        .then(handle404)
         .then(user => {
             user.thumbnail.push(thumbnail)
             user.save()

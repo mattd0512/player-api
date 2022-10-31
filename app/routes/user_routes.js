@@ -16,7 +16,8 @@ const BadParamsError = errors.BadParamsError
 const BadCredentialsError = errors.BadCredentialsError
 
 const User = require('../models/user')
-
+// pull in Mongoose model for games
+const Game = require('../models/game')
 // passing this as a second argument to `router.<verb>` will make it
 // so that a token MUST be passed for that route to be available
 // it will also set `res.user`
@@ -24,6 +25,8 @@ const requireToken = passport.authenticate('bearer', { session: false })
 
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
+
+
 
 // function for determining if username or email is used at log in
 
@@ -156,6 +159,31 @@ router.delete('/sign-out', requireToken, (req, res, next) => {
 		.save()
 		.then(() => res.sendStatus(204))
 		.catch(next)
+})
+
+// SHOW route for user's profile
+router.get('/my-profile', requireToken, (req, res, next) => {
+    User.findById(req.user.id)
+        .then(user => {
+            user.token = null
+            user.hashedPassword = null
+            return user
+        })
+		.then((user) => res.status(201).json({ user: user }))
+        .catch(next)
+})
+
+// SHOW route for other users' profiles
+router.get('/profile/:username', requireToken, (req, res, next) => {
+    User.findOne({ username: req.params.username })
+        .then(user => {
+            user.token = null
+            user.hashedPassword = null
+            user.email = null
+            return user
+        })
+		.then((user) => res.status(201).json({ user: user }))
+        .catch(next)
 })
 
 module.exports = router
