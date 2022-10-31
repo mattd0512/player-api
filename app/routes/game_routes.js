@@ -85,6 +85,24 @@ router.get('/games/:apiId', (req, res, next) => {
         .catch(next)
 })
 
+// Update page for removing a game from a user's library
+router.patch('/games/mylibrary/remove/:apiId', requireToken, (req, res, next) => {
+    const apiId = req.params.apiId
+    const userId = req.user.id
+    User.findById(userId)
+        .then(user => {
+            const myGames =user.myGames.slice()
+            const ind = myGames.indexOf(apiId)
+            if (ind > -1) {
+                myGames.splice(ind, 1)
+            }
+            user.myGames = myGames
+            user.save()
+        })
+        .then(() => res.sendStatus(200))
+        .catch(next)
+})
+
 // Update page for adding games to user library
 router.patch('/games/mylibrary/:apiId', requireToken, (req, res, next) => {
     const apiId = req.params.apiId
@@ -114,75 +132,5 @@ router.patch('games/myfavorite/:thumbnailUrl', requireToken, (req, res, next) =>
         .catch(next) 
 })
 
-
-
-// SHOW
-// GET /games/5a7db6c74d55bc51bdf39793
-// router.get('/games/:id', requireToken, (req, res, next) => {
-// 	// req.params.id will be set based on the `:id` in the route
-// 	Game.findById(req.params.id)
-// 		.then(handle404)
-// 		// if `findById` is succesful, respond with 200 and "game" JSON
-// 		.then((game) => res.status(200).json({ game: game.toObject() }))
-// 		// if an error occurs, pass it to the handler
-// 		.catch(next)
-// })
-
-// CREATE
-// POST /games
-router.post('/games', requireToken, (req, res, next) => {
-	// set owner of new game to be current user
-	req.body.game.owner = req.user.id
-
-	Game.create(req.body.game)
-		// respond to succesful `create` with status 201 and JSON of new "game"
-		.then((game) => {
-			res.status(201).json({ game: game.toObject() })
-		})
-		// if an error occurs, pass it off to our error handler
-		// the error handler needs the error message and the `res` object so that it
-		// can send an error message back to the client
-		.catch(next)
-})
-
-// UPDATE
-// PATCH /games/5a7db6c74d55bc51bdf39793
-router.patch('/games/:id', requireToken, removeBlanks, (req, res, next) => {
-	// if the client attempts to change the `owner` property by including a new
-	// owner, prevent that by deleting that key/value pair
-	delete req.body.game.owner
-
-	Game.findById(req.params.id)
-		.then(handle404)
-		.then((game) => {
-			// pass the `req` object and the Mongoose record to `requireOwnership`
-			// it will throw an error if the current user isn't the owner
-			requireOwnership(req, game)
-
-			// pass the result of Mongoose's `.update` to the next `.then`
-			return game.updateOne(req.body.game)
-		})
-		// if that succeeded, return 204 and no JSON
-		.then(() => res.sendStatus(204))
-		// if an error occurs, pass it to the handler
-		.catch(next)
-})
-
-// DESTROY
-// DELETE /games/5a7db6c74d55bc51bdf39793
-router.delete('/games/:id', requireToken, (req, res, next) => {
-	Game.findById(req.params.id)
-		.then(handle404)
-		.then((game) => {
-			// throw an error if current user doesn't own `game`
-			requireOwnership(req, game)
-			// delete the game ONLY IF the above didn't throw
-			game.deleteOne()
-		})
-		// send back 204 and no content if the deletion succeeded
-		.then(() => res.sendStatus(204))
-		// if an error occurs, pass it to the handler
-		.catch(next)
-})
 
 module.exports = router
