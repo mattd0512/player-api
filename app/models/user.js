@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
 // virtuals
 // this virtual is to sanitize the username to allow the display to be case sensitive but the validation to not be. Will also prevent 'Bryan' and 'bryan' to not be considered seperate valid usernames
 userSchema.virtual('sanitizedUsername').get(function () {
-    return this.username.toLowercase()
+    return this.username.toLowerCase()
 })
 
 module.exports = mongoose.model('User', userSchema)

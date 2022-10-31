@@ -6,11 +6,17 @@ const passport = require('passport')
 // pull in Mongoose model for games
 const Game = require('../models/game')
 
+// User model Import
+const User = require('../models/user')
+
 // import GiantBomb Api Key
 const apiKey = require('../APIKey')
 
 // import Axios
 const axios = require('axios')
+
+// import script for adding game to db
+const findAndAddGame = require('../scripts/scripts')
 
 // this is a collection of methods that help us detect situations when we need
 // to throw a custom error
@@ -77,6 +83,22 @@ router.get('/games/:apiId', (req, res, next) => {
         })
         .then(res => res.status(200).json({results : res.body}))
         .catch(next)
+})
+
+// Update page for adding games to user library
+router.patch('/games/addtocollection/:apiId', requireToken, (req, res, next) => {
+    const apiId = req.params.apiId
+    const userId = req.user.id
+    findAndAddGame(apiId)
+        .then(
+            User.findById(userId)
+                .then(user => {
+                    user.myGames.push(apiId)
+                    user.save()
+                })
+                .catch(next)
+        )
+
 })
 
 
