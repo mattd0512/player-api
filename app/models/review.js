@@ -11,10 +11,14 @@ const reviewSchema = new mongoose.Schema(
 			required: true,
             enum: [1, 2, 3, 4, 5]
 		},
+        gameId : {
+            type: String,
+            required: true
+        },
 		owner: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
-			required: true,
+			required: true
 		},
 	},
 	{
