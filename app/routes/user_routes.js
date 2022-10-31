@@ -16,7 +16,8 @@ const BadParamsError = errors.BadParamsError
 const BadCredentialsError = errors.BadCredentialsError
 
 const User = require('../models/user')
-
+// pull in Mongoose model for games
+const Game = require('../models/game')
 // passing this as a second argument to `router.<verb>` will make it
 // so that a token MUST be passed for that route to be available
 // it will also set `res.user`
@@ -24,6 +25,21 @@ const requireToken = passport.authenticate('bearer', { session: false })
 
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
+
+
+
+// function for determining if username or email is used at log in
+
+// to use please update the sign in form on the client sw. Also we need to prevent special characters from being used when registering a username... namely '@' as that is all this script checks against 
+// const loginType = (name) => {
+//     if (name.includes('@')) {
+//         return { email: name }
+//     } else {
+//         return { username: name }
+//     }
+// }
+
+
 
 // SIGN UP
 // POST /sign-up
@@ -47,7 +63,9 @@ router.post('/sign-up', (req, res, next) => {
 			// return necessary params to create a user
 			return {
 				email: req.body.credentials.email,
-				username: req.body.credentials.username,
+
+                username: req.body.credentials.username,
+
 				hashedPassword: hash,
 			}
 		})
@@ -64,6 +82,7 @@ router.post('/sign-up', (req, res, next) => {
 // POST /sign-in
 router.post('/sign-in', (req, res, next) => {
 	const pw = req.body.credentials.password
+    const name = req.body.credentials.name
 	let user
 
 	// find a user based on the email that was passed
@@ -142,6 +161,31 @@ router.delete('/sign-out', requireToken, (req, res, next) => {
 		.save()
 		.then(() => res.sendStatus(204))
 		.catch(next)
+})
+
+// SHOW route for user's profile
+router.get('/my-profile', requireToken, (req, res, next) => {
+    User.findById(req.user.id)
+        .then(user => {
+            user.token = null
+            user.hashedPassword = null
+            return user
+        })
+		.then((user) => res.status(201).json({ user: user }))
+        .catch(next)
+})
+
+// SHOW route for other users' profiles
+router.get('/profile/:username', requireToken, (req, res, next) => {
+    User.findOne({ username: req.params.username })
+        .then(user => {
+            user.token = null
+            user.hashedPassword = null
+            user.email = null
+            return user
+        })
+		.then((user) => res.status(201).json({ user: user }))
+        .catch(next)
 })
 
 module.exports = router
