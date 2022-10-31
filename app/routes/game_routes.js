@@ -53,7 +53,7 @@ router.get('/games', requireToken, (req, res, next) => {
 router.get('/games/search/:name', (req, res, next) => {
     const name = req.params.name
     console.log(name)
-    axios.get(`http://www.giantbomb.com/api/search/?api_key=${apiKey}&format=json&query="${name}"&resources=game&limit=100`)
+    axios.get(`http://www.giantbomb.com/api/search/?api_key=${apiKey}&format=json&query="${name}"&resources=game&limit=25`)
         .then(apiRes => {
             
             // console.log('this is API Res', apiRes)
