@@ -12,8 +12,7 @@ const gameSchema = new mongoose.Schema(
 		},
 		apiId: {
 			type: String,
-			required: true,
-            unique: true
+			required: true
 		},
 	},
 	{

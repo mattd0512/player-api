@@ -90,15 +90,15 @@ router.patch('/games/addtocollection/:apiId', requireToken, (req, res, next) => 
     const apiId = req.params.apiId
     const userId = req.user.id
     findAndAddGame(apiId)
-        .then(
             User.findById(userId)
                 .then(user => {
-                    user.myGames.push(apiId)
-                    user.save()
+                    if(!user.myGames.includes(apiId)) {
+                        user.myGames.push(apiId)
+                        user.save()
+                    }
                 })
+                .then(() => res.sendStatus(200))
                 .catch(next)
-        )
-
 })
 
 
