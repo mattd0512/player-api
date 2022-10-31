@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+const platformSchema = require('./platform')
+
 const userSchema = new mongoose.Schema(
 	{
 		email: {
@@ -15,6 +17,7 @@ const userSchema = new mongoose.Schema(
             type: String,
         },
         myGames: [],
+        platforms: [platformSchema],
 		hashedPassword: {
 			type: String,
 			required: true,
