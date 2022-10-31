@@ -7,6 +7,14 @@ const userSchema = new mongoose.Schema(
 			required: true,
 			unique: true,
 		},
+        username: {
+            type: String,
+            required: true,
+        },
+        thumbnail: {
+            type: String,
+        },
+        myGames: [],
 		hashedPassword: {
 			type: String,
 			required: true,
@@ -16,13 +24,21 @@ const userSchema = new mongoose.Schema(
 	{
 		timestamps: true,
 		toObject: {
+            virtuals: true,
 			// remove `hashedPassword` field when we call `.toObject`
 			transform: (_doc, user) => {
 				delete user.hashedPassword
 				return user
 			},
 		},
+        toJSON: { virtuals: true }
 	}
 )
+
+// virtuals
+// this virtual is to sanitize the username to allow the display to be case sensitive but the validation to not be. Will also prevent 'Bryan' and 'bryan' to not be considered seperate valid usernames
+userSchema.virtual('sanitizedUsername').get(function () {
+    return this.username.toLowercase()
+})
 
 module.exports = mongoose.model('User', userSchema)
