@@ -58,7 +58,7 @@ router.get('/games/search/:name', (req, res, next) => {
             
             // console.log('this is API Res', apiRes)
             res.body = apiRes.data.results
-            console.log('this is res', res.body)
+            // console.log('this is res', res.body)
             return res
         })
         .then((res) => res.status(200).json({results : res.body}))
@@ -67,17 +67,30 @@ router.get('/games/search/:name', (req, res, next) => {
 
 })
 
+// SHOW page for individual game
+router.get('/games/:apiId', (req, res, next) => {
+    const apiId = req.params.apiId
+    axios.get(`http://www.giantbomb.com/api/game/${apiId}/?api_key=${apiKey}&format=json`)
+        .then(apiRes => {
+            res.body = apiRes.data.results
+            return res
+        })
+        .then(res => res.status(200).json({results : res.body}))
+        .catch(next)
+})
+
+
 // SHOW
 // GET /games/5a7db6c74d55bc51bdf39793
-router.get('/games/:id', requireToken, (req, res, next) => {
-	// req.params.id will be set based on the `:id` in the route
-	Game.findById(req.params.id)
-		.then(handle404)
-		// if `findById` is succesful, respond with 200 and "game" JSON
-		.then((game) => res.status(200).json({ game: game.toObject() }))
-		// if an error occurs, pass it to the handler
-		.catch(next)
-})
+// router.get('/games/:id', requireToken, (req, res, next) => {
+// 	// req.params.id will be set based on the `:id` in the route
+// 	Game.findById(req.params.id)
+// 		.then(handle404)
+// 		// if `findById` is succesful, respond with 200 and "game" JSON
+// 		.then((game) => res.status(200).json({ game: game.toObject() }))
+// 		// if an error occurs, pass it to the handler
+// 		.catch(next)
+// })
 
 // CREATE
 // POST /games
