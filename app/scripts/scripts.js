@@ -6,16 +6,16 @@ const game = require('../models/game')
 const axios = require('axios')
 
 const findAndAddGame = (apiId) => {
-    console.log('start')
     Game.find({ apiId : apiId})
         .then(game => {
-            console.log(game.length)
             if(game.length === 0) {
                 axios.get(`http://www.giantbomb.com/api/game/${apiId}/?api_key=${apiKey}&format=json`)
                 .then(apiRes => {
                     const game = {
                        title: apiRes.data.results.name,
                        description: apiRes.data.results.deck,
+                       imgUrl: apiRes.data.reults.image.original_url,
+                       thumbnailUrl: apiRes.data.reults.image.thumb_url,
                        apiId:  apiRes.data.results.id 
                     }
                     return game
@@ -24,10 +24,8 @@ const findAndAddGame = (apiId) => {
                     Game.create(game)
                 })
                 .catch(console.error)
-        
-            } else {return}
-        }) 
-        return  
+            }
+        })  
 }
 
 module.exports = findAndAddGame

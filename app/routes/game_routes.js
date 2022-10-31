@@ -86,20 +86,34 @@ router.get('/games/:apiId', (req, res, next) => {
 })
 
 // Update page for adding games to user library
-router.patch('/games/addtocollection/:apiId', requireToken, (req, res, next) => {
+router.patch('/games/mylibrary/:apiId', requireToken, (req, res, next) => {
     const apiId = req.params.apiId
     const userId = req.user.id
     findAndAddGame(apiId)
-            User.findById(userId)
-                .then(user => {
-                    if(!user.myGames.includes(apiId)) {
-                        user.myGames.push(apiId)
-                        user.save()
-                    }
-                })
-                .then(() => res.sendStatus(200))
-                .catch(next)
+    User.findById(userId)
+        .then(user => {
+            if(!user.myGames.includes(apiId)) {
+                user.myGames.push(apiId)
+                user.save()
+            }
+        })
+        .then(() => res.sendStatus(200))
+        .catch(next)
 })
+
+// Update page for adding thumbnail to user's profile
+router.patch('games/myfavorite/:thumbnailUrl', requireToken, (req, res, next) => {
+    const thumbnail = req.params.thumbnailUrl
+    const userId = req.user.id
+    User.findById(userId)
+        .then(user => {
+            user.thumbnail.push(thumbnail)
+            user.save()
+        })
+        .then(() => res.sendStatus(200))
+        .catch(next) 
+})
+
 
 
 // SHOW

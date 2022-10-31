@@ -10,9 +10,12 @@ const gameSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+        imgUrl: String,
+        thumbnailUrl: String,
 		apiId: {
 			type: String,
-			required: true
+			required: true,
+            unique: true
 		},
 	},
 	{
