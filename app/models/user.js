@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
 			required: true,
 			unique: true,
 		},
+
         username: {
             type: String,
             required: true,
@@ -29,7 +30,6 @@ const userSchema = new mongoose.Schema(
 		timestamps: true,
 		toObject: {
             virtuals: true,
-			// remove `hashedPassword` field when we call `.toObject`
 			transform: (_doc, user) => {
 				delete user.hashedPassword
 				return user

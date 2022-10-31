@@ -31,13 +31,13 @@ const router = express.Router()
 // function for determining if username or email is used at log in
 
 // to use please update the sign in form on the client sw. Also we need to prevent special characters from being used when registering a username... namely '@' as that is all this script checks against 
-const loginType = (name) => {
-    if (name.includes('@')) {
-        return { email: name }
-    } else {
-        return { username: name }
-    }
-}
+// const loginType = (name) => {
+//     if (name.includes('@')) {
+//         return { email: name }
+//     } else {
+//         return { username: name }
+//     }
+// }
 
 
 
@@ -63,7 +63,9 @@ router.post('/sign-up', (req, res, next) => {
 			// return necessary params to create a user
 			return {
 				email: req.body.credentials.email,
+
                 username: req.body.credentials.username,
+
 				hashedPassword: hash,
 			}
 		})
