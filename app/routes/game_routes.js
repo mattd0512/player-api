@@ -131,6 +131,7 @@ router.patch('/games/myfavorite/:apiId', requireToken, (req, res, next) => {
     Game.findOne({apiId : apiId})
         .then(handle404)
         .then(game => {
+            console.log(game.avgScore)
             thumbnail = game.thumbnailUrl
         })
         .then(() => {
