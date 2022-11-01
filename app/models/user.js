@@ -17,6 +17,8 @@ const userSchema = new mongoose.Schema(
         },
         thumbnail: {
             type: String,
+            default: ''
+            
         },
         myGames: [],
         platforms: [platformSchema],
