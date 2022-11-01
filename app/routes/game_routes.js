@@ -124,16 +124,25 @@ router.patch('/games/mylibrary/:apiId', requireToken, (req, res, next) => {
 })
 
 // Update page for adding thumbnail to user's profile
-router.patch('games/myfavorite/:thumbnailUrl', requireToken, (req, res, next) => {
-    const thumbnail = req.params.thumbnailUrl
+router.patch('/games/myfavorite/:apiId', requireToken, (req, res, next) => {
+    const apiId = req.params.apiId
     const userId = req.user.id
-    User.findById(userId)
+    let thumbnail        
+    Game.findOne({apiId : apiId})
         .then(handle404)
-        .then(user => {
-            user.thumbnail.push(thumbnail)
-            user.save()
+        .then(game => {
+            thumbnail = game.thumbnailUrl
         })
-        .then(() => res.sendStatus(200))
+        .then(() => {
+            User.findById(userId)
+                .then(handle404)
+                .then(user => {
+                    user.thumbnail = thumbnail
+                    user.save()
+                })
+                .then(() => res.sendStatus(200))
+                .catch(next)
+        })
         .catch(next) 
 })
 

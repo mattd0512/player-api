@@ -4,6 +4,7 @@ const router = express.Router()
 const apiKey = require('../APIKey')
 const axios = require('axios')
 const customErrors = require('../../lib/custom_errors')
+const game = require('../models/game')
 const handle404 = customErrors.handle404
 
 
@@ -18,8 +19,8 @@ const findAndAddGame = (apiId) => {
                     const game = {
                        title: apiRes.data.results.name,
                        description: apiRes.data.results.deck,
-                       imgUrl: apiRes.data.reults.image.original_url,
-                       thumbnailUrl: apiRes.data.reults.image.thumb_url,
+                       imgUrl: apiRes.data.results.image.original_url,
+                       thumbnailUrl: apiRes.data.results.image.thumb_url,
                        apiId:  apiRes.data.results.id 
                     }
                     return game
@@ -29,7 +30,7 @@ const findAndAddGame = (apiId) => {
                 })
                 .catch(console.error)
             }
-        })  
+        }) 
 }
 
 module.exports = findAndAddGame
