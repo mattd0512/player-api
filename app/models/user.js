@@ -2,6 +2,11 @@ const mongoose = require('mongoose')
 
 const platformSchema = require('./platform')
 
+// const validator = (username) => {
+//     console.log(!username.includes('@'))
+//     return !username.includes('@')
+// }
+
 const userSchema = new mongoose.Schema(
 	{
 		email: {
@@ -13,6 +18,13 @@ const userSchema = new mongoose.Schema(
         username: {
             type: String,
             required: true,
+            // validator: {
+            //     validator: function(v) {
+            //         return !v.includes('@')
+            //     },
+            //     message: 'Username cannot include "@"'
+            // },         
+            // [validator, 'Username cannot include "@"'],
             unique: true,
         },
         sanitizedUsername: {
