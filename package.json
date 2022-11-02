@@ -22,7 +22,6 @@
     "nodemon": "^2.0.20",
     "passport": "^0.5.0",
     "passport-http-bearer": "^1.0.1",
-    "socket.io": "4.4.0",
     "uuid": "8.3.2"
   }
 }
