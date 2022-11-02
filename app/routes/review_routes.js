@@ -5,8 +5,9 @@ const passport = require('passport')
 
 // pull in Mongoose model for reviews
 const Review = require('../models/review')
-
-
+const Game = require('../models/game')
+// import script for adding game to db
+const findAndAddGame = require('../scripts/scripts')
 
 // this is a collection of methods that help us detect situations when we need
 // to throw a custom error
@@ -61,20 +62,26 @@ router.get('/reviews/show/:id', requireToken, (req, res, next) => {
 // CREATE
 // POST /reviews
 router.post('/reviews/:gameId', requireToken, (req, res, next) => {
-    
+    const gameId = req.params.gameId
+    const score = req.body.review.score
     // set owner of new review to be current user
 	req.body.review.owner = req.user.id
-    req.body.review.gameId = req.params.gameId
-
+    req.body.review.gameId = gameId
+    // script to add game to local database if it isn't already there
+    
+    
 	Review.create(req.body.review)
 		// respond to succesful `create` with status 201 and JSON of new "review"
 		.then((review) => {
 			res.status(201).json({ review: review })
 		})
+        .then(() => {findAndAddGame(gameId, score)})
+        
 		// if an error occurs, pass it off to our error handler
 		// the error handler needs the error message and the `res` object so that it
 		// can send an error message back to the client
 		.catch(next)
+    
 })
 
 // UPDATE
