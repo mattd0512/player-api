@@ -2,6 +2,11 @@ const mongoose = require('mongoose')
 
 const platformSchema = require('./platform')
 
+// const validator = (username) => {
+//     console.log(!username.includes('@'))
+//     return !username.includes('@')
+// }
+
 const userSchema = new mongoose.Schema(
 	{
 		email: {
@@ -13,7 +18,19 @@ const userSchema = new mongoose.Schema(
         username: {
             type: String,
             required: true,
+            // validator: {
+            //     validator: function(v) {
+            //         return !v.includes('@')
+            //     },
+            //     message: 'Username cannot include "@"'
+            // },         
+            // [validator, 'Username cannot include "@"'],
             unique: true,
+        },
+        sanitizedUsername: {
+            type: String,
+            required: true,
+            unique: true
         },
         thumbnail: {
             type: String,
@@ -43,8 +60,8 @@ const userSchema = new mongoose.Schema(
 
 // virtuals
 // this virtual is to sanitize the username to allow the display to be case sensitive but the validation to not be. Will also prevent 'Bryan' and 'bryan' to not be considered seperate valid usernames
-userSchema.virtual('sanitizedUsername').get(function () {
-    return this.username.toLowerCase()
-})
+// userSchema.virtual('sanitizedUsername').get(function () {
+//     return this.username.toLowerCase()
+// })
 
 module.exports = mongoose.model('User', userSchema)
