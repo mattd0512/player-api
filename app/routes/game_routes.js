@@ -58,7 +58,7 @@ const router = express.Router()
 // INDEX -- game search results
 router.get('/games/search/:name', (req, res, next) => {
     const name = req.params.name
-    console.log(name)
+    console.log('what was searched for: ', name)
     axios.get(`http://www.giantbomb.com/api/search/?api_key=${apiKey}&format=json&query="${name}"&resources=game&limit=25`)
         .then(handle404)
         .then(apiRes => {
