@@ -15,7 +15,7 @@ const router = express.Router()
 // POST -> /platforms
 router.post('/platforms', requireToken, removeBlanks, (req, res, next) => {
 
-  const platform = req.body
+  const platform = req.body.platform
   const userId = req.user.id
 
   User.findById(userId)
@@ -42,11 +42,11 @@ router.patch('/platforms/:platformId', requireToken, removeBlanks, (req, res, ne
     .then(user => {
       const theplatform = user.platforms.id(platformId)
 
-      theplatform.set(req.body)
-
+      theplatform.set(req.body.platform)
       return user.save()
+      
     })
-    .then(user => res.sendStatus(204))
+    .then(user => res.status(201).json({ user: user }))
     .catch(next)
 })
 // DESTROY a platform
@@ -64,7 +64,7 @@ router.delete('/platforms/:platformId', requireToken, (req, res, next) => {
 
       return user.save()
     })
-    .then(res.sendStatus(204))
+    .then(user => res.status(201).json({ user: user }))
     .catch(next)
 })
 

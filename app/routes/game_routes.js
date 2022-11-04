@@ -74,6 +74,17 @@ router.get('/games/search/:name', (req, res, next) => {
 
 })
 
+// SHOW page for individual local game
+router.get('/games/library/:apiId', (req, res, next) => {
+    const apiId = req.params.apiId
+    Game.findOne({ apiId: apiId })
+        // .then(handle404)
+        .then((game) => 
+            res.status(200).json({ game: game }))
+        .catch(next)
+})
+
+
 // SHOW page for individual game
 router.get('/games/:apiId', (req, res, next) => {
     const apiId = req.params.apiId
@@ -118,9 +129,10 @@ router.patch('/games/mylibrary/:apiId', requireToken, (req, res, next) => {
             if(!user.myGames.includes(apiId)) {
                 user.myGames.push(apiId)
                 user.save()
+                return user
             }
         })
-        .then(() => res.sendStatus(200))
+        .then((user) => res.status(201).json({ user: user }))
         .catch(next)
 })
 
@@ -141,8 +153,9 @@ router.patch('/games/myfavorite/:apiId', requireToken, (req, res, next) => {
                 .then(user => {
                     user.thumbnail = thumbnail
                     user.save()
+                    return user
                 })
-                .then(() => res.sendStatus(200))
+                .then((user) => res.status(201).json({ user: user }))
                 .catch(next)
         })
         .catch(next) 
