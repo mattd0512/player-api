@@ -34,7 +34,7 @@ const router = express.Router()
 // GET /reviews/gameid
 router.get('/reviews/:gameId', requireToken, (req, res, next) => {
 	const gameId = req.params.gameId
-    Review.find({ apiId : gameId})
+    Review.find({ gameId : gameId})
 		.then((reviews) => {
 			// `reviews` will be an array of Mongoose documents
 			// we want to convert each one to a POJO, so we use `.map` to
