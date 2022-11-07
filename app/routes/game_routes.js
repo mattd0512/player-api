@@ -26,10 +26,12 @@ const customErrors = require('../../lib/custom_errors')
 const handle404 = customErrors.handle404
 // we'll use this function to send 401 when a user tries to modify a resource
 // that's owned by someone else
+// remove unused const
 const requireOwnership = customErrors.requireOwnership
 
 // this is middleware that will remove blank fields from `req.body`, e.g.
 // { game: { title: '', text: 'foo' } } -> { game: { text: 'foo' } }
+// remove unused require
 const removeBlanks = require('../../lib/remove_blank_fields')
 // passing this as a second argument to `router.<verb>` will make it
 // so that a token MUST be passed for that route to be available
@@ -107,6 +109,7 @@ router.patch('/games/mylibrary/remove/:apiId', requireToken, (req, res, next) =>
         .then(user => {
             const myGames =user.myGames.slice()
             const ind = myGames.indexOf(apiId)
+            // I would leave a comment here of what this is doing exactly. It's best pratice when our code becomes less human readable to leave a comment on what we are doing.
             if (ind > -1) {
                 myGames.splice(ind, 1)
             }
@@ -144,6 +147,7 @@ router.patch('/games/myfavorite/:apiId', requireToken, (req, res, next) => {
     Game.findOne({apiId : apiId})
         .then(handle404)
         .then(game => {
+            // remove console log or comment it out
             console.log(game.avgScore)
             thumbnail = game.thumbnailUrl
         })
