@@ -29,7 +29,7 @@ const gameSchema = new mongoose.Schema(
 )
 
 gameSchema.virtual('avgScore').get(function () {
-    let avgScore
+    let avgScore = 0
     if(this.scores.length > 0) {
         avgScore = 0
         this.scores.forEach(score => {
