@@ -7,6 +7,7 @@ const User = require('../models/user')
 const customErrors = require('../../lib/custom_errors')
 const handle404 = customErrors.handle404
 const removeBlanks = require('../../lib/remove_blank_fields')
+// double required the User model, remove this one
 const user = require('../models/user')
 const requireToken = passport.authenticate('bearer', { session: false })
 const router = express.Router()

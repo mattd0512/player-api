@@ -28,6 +28,7 @@ const gameSchema = new mongoose.Schema(
 	}
 )
 
+// Wonderful virtual!
 gameSchema.virtual('avgScore').get(function () {
     let avgScore = 0
     if(this.scores.length > 0) {
